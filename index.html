@@ -91,6 +91,16 @@ h3 { font-family: var(--display); font-weight: 400; font-size: 1.2rem; }
 }
 .leaf { color: var(--accent-lt); font-size: 1rem; transform: rotate(-30deg); display: inline-block; }
 
+/* ─── Fix black stripe on mobile: ensure botanical elements are contained ─── */
+.hero-botanical {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: var(--bg);
+  z-index: 0;
+}
+
 /* ─── Hero ─── */
 .hero {
   min-height: 100svh;
@@ -204,19 +214,21 @@ section { padding: 80px 0; }
 /* ─── Info cards ─── */
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 .info-card {
   background: var(--surface);
   border: 1px solid var(--rule);
   border-radius: var(--radius);
-  padding: 28px 24px;
+  padding: 20px 16px;
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: flex-start;
   transition: box-shadow .3s;
 }
+.info-card:nth-child(-n+3) { grid-row: 1; }
+.info-card:nth-child(n+4) { grid-row: 2; }
 .info-card:hover { box-shadow: 0 6px 24px rgba(45,106,79,.10); }
 .info-icon {
   flex-shrink: 0;
