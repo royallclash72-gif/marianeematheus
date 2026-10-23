@@ -71,22 +71,74 @@
             transition: opacity 0.8s ease, transform 0.8s ease;
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #EEEEE0;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #4A7C59;
-            border-radius: 3px;
+        /* Pulse animation for gold accents */
+        @keyframes pulse-gold {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
         }
 
-        /* Mobile-first utility */
-        .mobile-only { display: block; }
-        .mobile-only .md\:hidden { display: block; }
-        .mobile-only .md\:block { display: none; }
+        .pulse-gold {
+            animation: pulse-gold 3s ease-in-out infinite;
+        }
+
+        /* Stagger children entrance */
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fade-in-up 0.6s ease-out forwards;
+        }
+
+        /* Delayed staggered animation */
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+
+        /* Border glow animation */
+        @keyframes gold-glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.5), 0 0 30px rgba(212, 175, 55, 0.3); }
+        }
+
+        .glow-on-hover:hover {
+            animation: gold-glow 1.5s ease-in-out infinite;
+        }
+
+        /* Card lift on hover */
+        @keyframes card-lift {
+            from { transform: translateY(0); }
+            to { transform: translateY(-4px); }
+        }
+
+        .card-lift-on-hover:hover {
+            animation: card-lift 0.3s ease-out;
+        }
+
+        /* Text typewriter effect */
+        @keyframes type {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .typewriter {
+            animation: type 2s ease-in-out;
+        }
+
+        /* Success check mark animation */
+        @keymarks check-mark-in {
+            from: transform: scale(0);
+            to: transform: scale(1);
+        }
     </style>
 </head>
 <body class="bg-brand-background text-brand-charcoal font-sans antialiased">
@@ -155,13 +207,13 @@
             </div>
 
             <!-- Monograma / Nomes -->
-            <div class="my-auto py-8">
+            <div class="my-auto py-8 text-center">
                 <div class="font-script text-4xl sm:text-5xl text-brand-gold mb-2">M & M</div>
-                <h1 class="font-serif text-3xl sm:text-4xl font-normal text-brand-darkGreen tracking-wide mb-2">
+                <h1 class="font-serif text-3xl sm:text-4xl font-normal text-brand-darkGreen tracking-wide mx-auto mb-2">
                     Mariane & Matheus
                 </h1>
                 <div class="w-10 h-[1px] bg-brand-gold mx-auto my-4"></div>
-                <p class="font-sans text-xs sm:text-sm tracking-[0.25em] uppercase text-gray-700 font-light">
+                <p class="font-sans text-xs sm:text-sm tracking-[0.25em] uppercase text-gray-700 font-light mx-auto">
                     Sábado • 20 de Março de 2027 • 19:30h
                 </p>
             </div>
@@ -208,7 +260,7 @@
                     <h2 class="font-serif text-2xl sm:text-3xl text-brand-darkGreen tracking-wide uppercase">Cerimônia e Recepção</h2>
                 </div>
 
-                <div class="grid gap-6 mb-8">
+                <div class="grid gap-6 mb-8 flex flex-col">
                     <!-- Cerimônia -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand-gold/20 text-center flex flex-col justify-between">
                         <div>
@@ -301,7 +353,7 @@
                     <p class="text-xs text-gray-500 mb-4">Nubank - Mariane e Matheus</p>
 
                     <div class="bg-brand-cream p-3 rounded-xl border border-dashed border-brand-gold/40 flex items-center justify-between mb-3">
-                        <span id="pix-key" class="font-mono text-xs text-brand-darkGreen truncate pr-2">000.111.222-33</span>
+                        <span id="pix-key" class="font-mono text-xs text-brand-darkGreen truncate pr-2">65 99624-8649</span>
                         <button onclick="copyPixKey()" class="px-4 py-1.5 bg-brand-darkGreen text-white rounded-lg text-xs hover:bg-brand-gold transition-colors flex items-center gap-1.5 shrink-0">
                             <i class="fa-regular fa-copy"></i> Copiar
                         </button>
@@ -487,19 +539,8 @@
 
         // Abrir modal de RSVP
         function openRSVPForm() {
-            const modal = document.getElementById('rsvp-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                const modalContent = document.getElementById('rsvp-modal-content');
-                modalContent.classList.remove('scale-95', 'opacity-0');
-                modalContent.classList.add('scale-100', 'opacity-100');
-            }, 10);
-
-            // Focar no primeiro campo
-            setTimeout(() => {
-                const nameInput = document.getElementById('rsvp-name');
-                if (nameInput) nameInput.focus();
-            }, 300);
+            // Redirecionar para a lista de presentes
+            window.location.href = 'https://casamento-mariane-matheu.listaideal.com.br/pt';
         }
 
         // Fechar modal
