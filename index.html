@@ -461,17 +461,25 @@
             <div class="max-w-2xl mx-auto">
                 <div class="text-center mb-8 fade-in-up">
                     <span class="font-script text-2xl text-brand-gold block">Confirmação de Presença</span>
-                    <p class="text-xs text-gray-500 mt-2">Informe abaixo se poderá comparecer</p>
+                    <p id="rsvp-deadline-text" class="text-sm text-gray-600 mt-2">Confirme sua presença até <strong class="text-brand-darkGreen">20 de fevereiro de 2027</strong></p>
                 </div>
 
                 <!-- Botão principal de confirmação -->
                 <div class="text-center mb-8 fade-in-up">
-                    <button onclick="openRSVPForm()" class="group relative inline-flex items-center justify-center px-10 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-white bg-brand-darkGreen rounded-full shadow-lg hover:bg-brand-gold transition-all duration-500 overflow-hidden cursor-pointer">
-                        <span class="relative z-10 flex items-center gap-2">
+                    <!-- Contagem para o prazo (preenchida via JS; some depois do prazo) -->
+                    <p id="rsvp-countdown" class="hidden text-xs sm:text-sm font-medium text-brand-goldDark mb-4">
+                        <i class="fa-regular fa-calendar-check mr-1"></i><span id="rsvp-countdown-text"></span>
+                    </p>
+
+                    <button id="rsvp-btn" onclick="openRSVPForm()" class="group relative inline-flex items-center justify-center px-10 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-white bg-brand-darkGreen rounded-full shadow-lg hover:bg-brand-gold transition-all duration-500 overflow-hidden cursor-pointer">
+                        <span id="rsvp-btn-content" class="relative z-10 flex items-center gap-2">
                             <i class="fa-solid fa-user-plus text-lg"></i>
                             Confirmar Presença
                         </span>
                     </button>
+
+                    <!-- Aviso exibido só depois do prazo -->
+                    <p id="rsvp-closed-note" class="hidden text-xs text-gray-600 mt-4"></p>
                 </div>
 
                 <!-- Modal de RSVP -->
@@ -677,6 +685,49 @@
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
+        // ===== Prazo para confirmar presença =====
+        // Vale até o fim do dia 20/02/2027, horário de Mato Grosso (UTC-4)
+        const rsvpDeadline = new Date('2027-02-20T23:59:59-04:00').getTime();
+
+        function isRsvpClosed() {
+            return Date.now() > rsvpDeadline;
+        }
+
+        function updateRsvpDeadline() {
+            const btn = document.getElementById('rsvp-btn');
+            if (!btn) return;
+
+            const content = document.getElementById('rsvp-btn-content');
+            const countdown = document.getElementById('rsvp-countdown');
+            const countdownText = document.getElementById('rsvp-countdown-text');
+            const note = document.getElementById('rsvp-closed-note');
+            const deadlineText = document.getElementById('rsvp-deadline-text');
+            const msLeft = rsvpDeadline - Date.now();
+
+            if (msLeft <= 0) {
+                // Prazo encerrado: botão cinza e desativado
+                btn.disabled = true;
+                btn.setAttribute('aria-disabled', 'true');
+                btn.className = 'relative inline-flex items-center justify-center px-10 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-gray-600 bg-gray-200 rounded-full cursor-not-allowed';
+                content.innerHTML = '<i class="fa-solid fa-calendar-xmark text-lg"></i> Prazo de confirmação encerrado';
+                countdown.classList.add('hidden');
+                note.textContent = 'As confirmações foram encerradas em 20/02/2027.';
+                note.classList.remove('hidden');
+                deadlineText.innerHTML = 'O prazo para confirmar presença terminou em <strong class="text-brand-darkGreen">20 de fevereiro de 2027</strong>';
+                return;
+            }
+
+            // Antes do prazo: mostra quantos dias faltam
+            const days = Math.ceil(msLeft / (1000 * 60 * 60 * 24));
+            countdownText.textContent = days > 1
+                ? `Faltam ${days} dias para confirmar`
+                : 'Último dia para confirmar!';
+            countdown.classList.remove('hidden');
+        }
+
+        updateRsvpDeadline();
+        setInterval(updateRsvpDeadline, 60000);
+
         // Copiar Chave PIX (copia exatamente o que está exibido em #pix-key)
         async function copyPixKey() {
             const pixKey = document.getElementById('pix-key').textContent.trim();
@@ -706,6 +757,7 @@
 
         // Abrir modal de RSVP
         function openRSVPForm() {
+            if (isRsvpClosed()) return; // prazo encerrado
             // Redirecionar para a lista de presentes
             window.location.href = 'https://casamento-mariane-matheu.listaideal.com.br/pt';
         }
